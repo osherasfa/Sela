@@ -2,3 +2,4 @@
 .env
 .env.local
 node_modules
+code_review_analysis.md

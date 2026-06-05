@@ -1,0 +1,24 @@
+.kanban-board {
+    margin: 2rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.list {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    background-color: #e7e7e7;
+    height: fit-content;
+}
+
+.task {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    background-color: #f9f9f9;
+}

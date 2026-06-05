@@ -1,14 +1,15 @@
 import './App.css'
+import Kanban from './components/Kanban'
 
 function App() {
 
   return (
     <>
       <section id="center">
-        <h1>Hello World</h1>
+        <Kanban />
       </section>
     </>
   )
 }
 
-export default App
+export default App;

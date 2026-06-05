@@ -7,6 +7,6 @@ Sela is a high-performance project management platform built to help modern team
 - **History Versions Control:** Keep track of changes, visual logs, and rollback task states.
 - **Fast & Seamless Workflow:** Built for ultra-low latency updates and quick workspace interactions.
 ## 🛠️ Tech Stack
-- **Frontend:** Next.js 15+, Zustand (State Management), TanStack Query, Zod (Validation)
+- **Frontend:** React (Vite), Zustand (State Management), TanStack Query, Zod (Validation)
 - **Backend:** Express.js, Socket.IO (Real-time), JWT Auth, Drizzle ORM, Redis (Caching/Pub-Sub)
 - **Database:** PostgreSQL
