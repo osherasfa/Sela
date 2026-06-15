@@ -1,35 +1,43 @@
 import { useRef } from "react";
 
 const Task = ({ task, moveTask, currList }) => {
-    const coords = useRef({ newX: 0, newY: 0, startX: 0, startY: 0 });
+    const coords = useRef({ mouseX: 0, mouseY: 0, elemX: 0, elemY: 0 });
+    const taskRef = useRef(null);
     const { taskId, taskTitle, taskDescription, subTasks, taskTags } = task;
 
 
     const handleMouseDown = (e) => {
-        // console.log('Mouse Down');
-        coords.current = { ...coords.current, startX: e.clientX, startY: e.clientY };
+        taskRef.current = e.target.closest('.task');
+        if (!taskRef.current) return;
 
-        // document.addEventListener('mousemove', handleMouseMove);
+        const { top, left } = taskRef.current.getBoundingClientRect();
+        coords.current = { mouseX: e.clientX, mouseY: e.clientY, elemX: left, elemY: top };
+
+        taskRef.current.style.position = 'fixed';
+        taskRef.current.style.opacity = '0.5';
+        taskRef.current.style.border = '4px dashed #ccc';
+
+        document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     }
 
-    // const handleMouseMove = (e) => {
-    //     console.log('Mouse Move');
+    const handleMouseMove = ({ clientX: x, clientY: y }) => {
+        const { mouseX, mouseY, elemX, elemY } = coords.current;
 
-    // }
+        taskRef.current.style.top = `${elemY + y - mouseY}px`;
+        taskRef.current.style.left = `${elemX + x - mouseX}px`;
+    }
 
-    const handleMouseUp = (e) => {
-        // document.removeEventListener('mousemove', handleMouseMove);
+    const handleMouseUp = ({ clientX: x, clientY: y }) => {
+        const toList = document.elementFromPoint(x, y).closest('.list').firstElementChild.textContent
+        if (!toList) return
+
+        taskRef.current.style.opacity = '1';
+        taskRef.current.style.border = '1px solid #ccc';
+        taskRef.current = null;
+
+        document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
-
-        const x = e.clientX, y = e.clientY;
-        // console.log('Mouse Up', x, y);
-
-        const element = document.elementFromPoint(x, y).closest('.list')
-
-        if (!element) return
-
-        const toList = element.firstElementChild.textContent;
 
         moveTask(taskId, currList, toList);
     }

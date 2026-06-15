@@ -1,0 +1,1 @@
+{"version":3,"file":"boardController.js","sourceRoot":"","sources":["../../../src/controllers/boardController.ts"],"names":[],"mappings":"AAAA,MAAM,QAAQ,GAAG,KAAK,EAAE,GAAQ,EAAE,GAAQ,EAAE,EAAE;IAC5C,MAAM,EAAE,OAAO,EAAE,GAAG,GAAG,CAAC,MAAM,CAAC;IAC/B,GAAG,CAAC,IAAI,CAAC,EAAE,OAAO,EAAE,QAAQ,OAAO,QAAQ,EAAE,CAAC,CAAC;AACjD,CAAC,CAAC;AAEF,OAAO,EAAE,QAAQ,EAAE,CAAC"}
