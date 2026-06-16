@@ -3,88 +3,52 @@ config({ path: "../../.env" })
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from "pg";
 import { users, boards, columns, tasks } from "./schema.js";
-import { eq } from 'drizzle-orm';
 
 console.log("Hmm..", process.env.DATABASE_URL)
 const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
 const db = drizzle(pool);
 
-// async function main() {
-//     const user: typeof users.$inferInsert = {
-//         email: 'osher@example.com',
-//         username: 'bowieteth',
-//         password: 'weakpassword',
-//     };
+async function populateDBWithDefaultData() {
+    /* Populate User */
+    const defaultUser: typeof users.$inferInsert = {
+        email: 'osher@example.com',
+        username: 'bowieteth',
+        password: 'weakpassword',
+    };
+    const [dbUser] = await db.insert(users).values(defaultUser).onConflictDoNothing({ target: [users.email, users.username] }).returning();
+    console.log(dbUser);
 
-//     const result = await db.insert(users).values(user).onConflictDoNothing({ target: users.email }).returning();
-//     if (result.length > 0)
-//         console.log('New user created!')
-//     else
-//         console.log("User already exists!");
-
-//     let allUsers = await db.select().from(users);
-//     console.log('Getting all users from the database: ', allUsers)
-// }
-
-async function main() {
-    const [ user ] = await db.select().from(users).where(eq(users.email, "osher@example.com"));
-    if(!user) {
-        console.log("No user found!")
-        return;
-    }
-
+    /* Populate Board */
     const defaultBoard: typeof boards.$inferInsert = {
-        ownerId: user.id,
+        ownerId: dbUser.id,
         title: "Default BoardTitle",
     };
-    const [ dbBoard ] = await db.insert(boards).values(defaultBoard).returning();
+    const [dbBoard] = await db.insert(boards).values(defaultBoard).onConflictDoNothing({ target: boards.title }).returning();
     console.log(dbBoard);
 
-    const defaultColumns: typeof columns.$inferInsert[] = [
-        {
-            boardId: dbBoard.id,
-            title: "To Do",
-            position: "1"
-        },
-        {
-            boardId: dbBoard.id,
-            title: "In Progress",
-            position: "2",
-        },
-        {
-            boardId: dbBoard.id,
-            title: "Testing",
-            position: "3"
-        },
-        {
-            boardId: dbBoard.id,
-            title: "Done",
-            position: "4",
-        },
-    ];
-    
-    result = await db.insert(boards).values(defaultBoard).returning();
-    console.log(result);
+    /* Populate Columns */
+    const defaultColumns: typeof columns.$inferInsert[] = ["To Do", "In Progress", "Testing", "Done"].map((title, index) => ({
+        boardId: dbBoard.id,
+        title,
+        position: String(index + 1)
+    }));
 
-    const defaultTasks: typeof tasks.$inferInsert = {
-        columnId: defaultColumns.id,
-        title: "Default TaskTitle",
-        description: "Default TaskDescription",
-        position: "1",
-        xPos: 0,
-        yPos: 0,
-    };
-    result = await db.insert(boards).values(defaultBoard).returning();
-    console.log(result);
+    const [dbColumns] = await db.insert(columns).values(defaultColumns).onConflictDoNothing({ target: columns.title }).returning();
+    console.log(dbColumns);
 
-    
-    // if (result.length > 0)
-    //     console.log('New user created!')
-    // else
-    //     console.log("User already exists!");
+    /* Populate Tasks */
+    const defaultTasks: typeof tasks.$inferInsert[] = ["Task 1", "Task 2", "Task 3", "Task 4"].map((title, index) => ({
+        columnId: dbColumns.id,
+        title,
+        description: `${title} Description`,
+        position: String(index + 1)
+    }));
+    const [dbTasks] = await db.insert(tasks).values(defaultTasks).onConflictDoNothing({ target: tasks.title }).returning();
+    console.log(dbTasks);
+}
 
-    // let allUsers = await db.select().from(users);
-    // console.log('Getting all users from the database: ', allUsers)
+async function main() {
+    await populateDBWithDefaultData();
 }
 
 main();

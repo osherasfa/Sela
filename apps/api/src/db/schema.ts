@@ -1,3 +1,4 @@
+import { unique } from "drizzle-orm/gel-core";
 import {
   pgTable,
   uuid,
@@ -11,7 +12,7 @@ import {
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").unique().notNull(),
-  username: text("username").notNull(),
+  username: text("username").unique().notNull(),
   password: text("password").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -19,7 +20,7 @@ export const users = pgTable("users", {
 export const boards = pgTable("boards", {
   id: uuid("id").primaryKey().defaultRandom(),
   ownerId: uuid("owner_id").notNull().references(() => users.id),
-  title: text("title").notNull(),
+  title: text("title").unique().notNull(),
   shareToken: text("share_token").unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -39,7 +40,7 @@ export const boardMembers = pgTable(
 export const columns = pgTable("columns", {
   id: uuid("id").primaryKey().defaultRandom(),
   boardId: uuid("board_id").notNull().references(() => boards.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
+  title: text("title").unique().notNull(),
   position: numeric("position").notNull(),
   xPos: integer("x_pos"),
   yPos: integer("y_pos"),
@@ -48,7 +49,7 @@ export const columns = pgTable("columns", {
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().defaultRandom(),
   columnId: uuid("column_id").notNull().references(() => columns.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
+  title: text("title").unique().notNull(),
   description: text("description"),
   position: numeric("position").notNull(),
   xPos: integer("x_pos"),
