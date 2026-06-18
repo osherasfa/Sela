@@ -1,6 +1,6 @@
-import { unique } from "drizzle-orm/gel-core";
 import {
   pgTable,
+  unique,
   uuid,
   text,
   timestamp,
@@ -19,8 +19,8 @@ export const users = pgTable("users", {
 
 export const boards = pgTable("boards", {
   id: uuid("id").primaryKey().defaultRandom(),
-  ownerId: uuid("owner_id").notNull().references(() => users.id),
   title: text("title").unique().notNull(),
+  ownerId: uuid("owner_id").notNull().references(() => users.id),
   shareToken: text("share_token").unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
