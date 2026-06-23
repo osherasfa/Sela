@@ -1,14 +1,18 @@
 import './App.css'
+import Sidebar from './components/Sidebar'
 import Kanban from './components/Kanban'
 
 function App() {
-
   return (
-    <>
-      <section id="center">
+    <div className="app-layout">
+      {/* Sidebar blends with background */}
+      <Sidebar />
+
+      {/* Main Workspace Window container */}
+      <main className="main-content">
         <Kanban />
-      </section>
-    </>
+      </main>
+    </div>
   )
 }
 
