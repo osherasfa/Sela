@@ -37,4 +37,13 @@ const getBoard = async (req: any, res: any) => {
   }
 };
 
-export { getBoard };
+const getBoards = async (req: any, res: any) => {
+  try {
+    const resBoards = await db.select().from(boards);
+    return res.status(200).json(resBoards);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error fetching boards: ${error?.message || error}` });
+  }
+};
+
+export { getBoard, getBoards };
